@@ -38,6 +38,15 @@ def sub_group(message):
         json.dump(users, js)
 
 
+@bot.message_handler(commands=['help'])
+def show_commands(message):
+    bot.send_message(message.chat.id, "/start - Початок роботи"
+                                      "\n/subgroup1 - Перша підгрупа"
+                                      "\n/subgroup2 - Друга підгрупа"
+                                      "\n/leave - Вимкнути сповіщення"
+                                      "\n/help - Показати доступні команди")
+
+
 @bot.message_handler(commands=['leave'])
 def leave(message):
     if message.chat.id in users['subgroup1']:
@@ -55,29 +64,41 @@ def show(message):
     print(message.text)
 
 
-def notify(name):
+def notify():
     count = 0
     while True:
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
+        forward_time = current_time[0:3] + str(int(current_time[3:5]) + 10) + current_time[5:]
+
+        if current_time == "00:00:00":
+            count = 0
 
         if count == 0:
             day_schedule = data[week[now.weekday()]]
             count = 1
 
-        if current_time == "00:00:00":
-            count = 0
+        if forward_time in day_schedule:
+            for i in users["subgroup1"]:
+                bot.send_message(i, f'Скоро розпочнеться пара: "{day_schedule[forward_time]["subgroup1"]["name"]}"'
+                                    f'\nПосилання: google.com')
+
+            for i in users["subgroup2"]:
+                bot.send_message(i, f'Скоро розпочнеться пара: "{day_schedule[forward_time]["subgroup2"]["name"]}"'
+                                    f'\nПосилання: google.com')
 
         if current_time in day_schedule:
-            bot.send_message(365771922, f'Пара: {day_schedule[current_time]["name"]} почалась \nПосилання: google.com')
+            for i in users["subgroup1"]:
+                bot.send_message(i, f'Пара: "{day_schedule[current_time]["subgroup1"]["name"]}" почалась '
+                                    f'\nПосилання: google.com')
+
+            for i in users["subgroup2"]:
+                bot.send_message(i, f'Пара: "{day_schedule[current_time]["subgroup2"]["name"]}" почалась '
+                                    f'\nПосилання: google.com')
         time.sleep(1)
-        # print(current_time in day_schedule)
-        # print(now)
-        # print(current_time)
-        # print(day_schedule)
 
 
-thr = threading.Thread(target=notify, args=(1,))
+thr = threading.Thread(target=notify, args=())
 thr.start()
 
 bot.polling(none_stop=True)

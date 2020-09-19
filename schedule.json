@@ -1,212 +1,107 @@
 {
-    "subgroup1":
+    "monday":
     {
-        "monday":
+        "para1":
         {
-            "para1":
-            {
-                "time":"8:20",
-                "name":"python",
-                "link":"ssilka"
-            },
-            "para2":
-            {
-                "time":"9:40",
-                "name":"crypto",
-                "link":"ssilka"
-            }
+            "time":"8:20",
+            "name":"python",
+            "link":"ssilka"
+        },
+        "para2":
+        {
+            "time":"9:40",
+            "name":"crypto",
+            "link":"ssilka"
+        }
 
-        },
-        "tuesday":
+    },
+    "tuesday":
+    {
+        "para1":
         {
-            "para1":
-            {
-                "time":"8:20",
-                "name":"python",
-                "link":"ssilka"
-            },
-            "para2":
-            {
-                "time":"9:40",
-                "name":"crypto",
-                "link":"ssilka"
-            }
+            "time":"8:20",
+            "name":"python",
+            "link":"ssilka"
         },
-        "wednesday":
+        "para2":
         {
-            "para1":
-            {
-                "time":"8:20",
-                "name":"python",
-                "link":"ssilka"
-            },
-            "para2":
-            {
-                "time":"9:40",
-                "name":"crypto",
-                "link":"ssilka"
-            }
+            "time":"9:40",
+            "name":"crypto",
+            "link":"ssilka"
+        }
+    },
+    "wednesday":
+    {
+        "para1":
+        {
+            "time":"8:20",
+            "name":"python",
+            "link":"ssilka"
         },
-        "thursday":
+        "para2":
         {
-            "para1":
-            {
-                "time":"8:20",
-                "name":"python",
-                "link":"ssilka"
-            },
-            "para2":
-            {
-                "time":"9:40",
-                "name":"crypto",
-                "link":"ssilka"
-            }
+            "time":"9:40",
+            "name":"crypto",
+            "link":"ssilka"
+        }
+    },
+    "thursday":
+    {
+        "para1":
+        {
+            "time":"8:20",
+            "name":"python",
+            "link":"ssilka"
         },
-        "friday":
+        "para2":
         {
-            "13:00":
-            {
-                "name":"Якість ПЗ та тестування (Лекція)",
-                "link":"google.com"
-            },
-            "14:40":
-            {
-                "name":"Якість ПЗ та тестування (Практика)",
-                "link":"youtube.com"
-            }
+            "time":"9:40",
+            "name":"crypto",
+            "link":"ssilka"
+        }
+    },
+    "friday":
+    {
+        "13:00":
+        {
+            "name":"Якість ПЗ та тестування (Лекція)",
+            "link":"google.com"
         },
-        "saturday":
+        "14:40":
         {
-            "8:20:00":
-            {
-                "name":"python",
-                "link":"ssilka"
-            },
-            "21:35:00":
-            {
-                "name":"crypto",
-                "link":"ssilka"
-            }
-        },
-        "sunday":
+            "name":"Якість ПЗ та тестування (Практика)",
+            "link":"youtube.com"
+        }
+    },
+    "saturday":
+    {
+        "22:55:20":
         {
-            "para1":
+            "subgroup1":
             {
-                "time":"8:20",
-                "name":"python",
-                "link":"ssilka"
+            "name":"test",
+            "link":"ssilka"
             },
-            "para2":
+            "subgroup2":
             {
-                "time":"9:40",
-                "name":"crypto",
-                "link":"ssilka"
+            "name":"test",
+            "link":"ssilka"
             }
         }
     },
-    "subgroup2":
+    "sunday":
     {
-        "monday":
+        "para1":
         {
-            "para1":
-            {
-                "time":"8:20",
-                "name":"python",
-                "link":"ssilka"
-            },
-            "para2":
-            {
-                "time":"9:40",
-                "name":"crypto",
-                "link":"ssilka"
-            }
-
+            "time":"8:20",
+            "name":"python",
+            "link":"ssilka"
         },
-        "tuesday":
+        "para2":
         {
-            "para1":
-            {
-                "time":"8:20",
-                "name":"python",
-                "link":"ssilka"
-            },
-            "para2":
-            {
-                "time":"9:40",
-                "name":"crypto",
-                "link":"ssilka"
-            }
-        },
-        "wednesday":
-        {
-            "para1":
-            {
-                "time":"8:20",
-                "name":"python",
-                "link":"ssilka"
-            },
-            "para2":
-            {
-                "time":"9:40",
-                "name":"crypto",
-                "link":"ssilka"
-            }
-        },
-        "thursday":
-        {
-            "para1":
-            {
-                "time":"8:20",
-                "name":"python",
-                "link":"ssilka"
-            },
-            "para2":
-            {
-                "time":"9:40",
-                "name":"crypto",
-                "link":"ssilka"
-            }
-        },
-        "friday":
-        {
-            "13:00":
-            {
-                "name":"Якість ПЗ та тестування (Лекція)",
-                "link":"google.com"
-            },
-            "14:40":
-            {
-                "name":"Якість ПЗ та тестування (Практика)",
-                "link":"youtube.com"
-            }
-        },
-        "saturday":
-        {
-            "8:20:00":
-            {
-                "name":"python",
-                "link":"ssilka"
-            },
-            "21:35:00":
-            {
-                "name":"crypto",
-                "link":"ssilka"
-            }
-        },
-        "sunday":
-        {
-            "para1":
-            {
-                "time":"8:20",
-                "name":"python",
-                "link":"ssilka"
-            },
-            "para2":
-            {
-                "time":"9:40",
-                "name":"crypto",
-                "link":"ssilka"
-            }
+            "time":"9:40",
+            "name":"crypto",
+            "link":"ssilka"
         }
     }
 }
