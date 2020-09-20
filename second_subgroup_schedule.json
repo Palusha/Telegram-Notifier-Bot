@@ -4,17 +4,17 @@
         "11:30:00":
         {
           "name": "Безпека програм та даних, ч1 (Практика)",
-          "link": "ssilka"
+          "link": "https://meet.google.com/pzc-iuev-uzm"
         },
         "13:00:00":
         {
           "name": "Програмування мобільних додатків (Практика)",
-          "link": "ssilka"
+          "link": "https://meet.google.com/hus-hcvf-qde"
         },
         "14:40:00":
         {
           "name": "Системи штучного інтелекту (Практика)",
-          "link": "ssilka"
+          "link": "https://meet.google.com/pzc-iuev-uzm"
         }
     },
     "tuesday":
@@ -22,12 +22,12 @@
         "13:00:00":
         {
           "name": "Системи штучного інтелекту (Лекція)",
-          "link": "ssilka"
+          "link": "https://meet.google.com/pzc-iuev-uzm"
         },
         "14:40:00":
         {
-          "name": "Розробка високонавантажених веб-систем мовою Python",
-          "link": "ssilka"
+          "name": "Розробка високонавантажених веб-систем мовою Python (Практика)",
+          "link": "https://meet.google.com/hus-hcvf-qde"
         }
     },
     "wednesday":
@@ -35,7 +35,7 @@
         "11:30:00":
         {
           "name":"Безпека програм та даних, ч1 (Лекція)",
-          "link":"ssilka"
+          "link":"https://meet.google.com/pzc-iuev-uzm"
         },
         "13:00:00":
         {
@@ -45,7 +45,7 @@
         "14:40:00":
         {
           "name":"Англійська мова професійного спрямування",
-          "link":"ssilka"
+          "link":"meet.google.com/gdc-gkbq-sdf"
         }
     },
     "thursday":
@@ -63,7 +63,7 @@
         "14:40:00":
         {
           "name":"Розробка високонавантажених веб-систем мовою Python (Лекція)",
-          "link":"ssilka"
+          "link":"https://meet.google.com/hus-hcvf-qde"
         }
     },
     "friday":

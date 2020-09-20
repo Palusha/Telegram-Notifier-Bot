@@ -29,21 +29,21 @@ def send_welcome(message):
 
 @bot.message_handler(commands=['subgroup1', 'subgroup2'])
 def sub_group(message):
-    if message.chat.id in users['subgroup1']:
-        users['subgroup1'].remove(message.chat.id)
+    if message.chat.id in users[message.text[1:]]:
+        bot.send_message(message.chat.id, 'Ви вже пристуні у даній підгрупі!')
+    else:
+        for sub in users.keys():
+            if message.chat.id in users[sub]:
+                users[sub].remove(message.chat.id)
 
-    if message.chat.id in users['subgroup2']:
-        users['subgroup2'].remove(message.chat.id)
+        users[message.text[1:]].append(message.chat.id)
+        with open('users.json', 'w') as js:
+            json.dump(users, js)
 
-    users[message.text[1:]].append(message.chat.id)
-    with open('users.json', 'w') as js:
-        json.dump(users, js)
-
-    if message.text[1:] == 'subgroup1':
-        bot.send_message(message.chat.id, 'Ви були додані у першу підгрупу.')
-
-    if message.text[1:] == 'subgroup2':
-        bot.send_message(message.chat.id, 'Ви були додані у другу підгрупу.')
+        if message.text[1:] == 'subgroup1':
+            bot.send_message(message.chat.id, 'Ви були додані у першу підгрупу.')
+        else:
+            bot.send_message(message.chat.id, 'Ви були додані у другу підгрупу.')
 
 
 @bot.message_handler(commands=['help'])
@@ -60,16 +60,15 @@ def leave(message):
     if message.chat.id not in users['subgroup1'] and message.chat.id not in users['subgroup2']:
         bot.send_message(message.chat.id, 'Вас немає у списку підгруп!')
     else:
-        if message.chat.id in users['subgroup1']:
-            users['subgroup1'].remove(message.chat.id)
-
-        if message.chat.id in users['subgroup2']:
-            users['subgroup2'].remove(message.chat.id)
+        for sub in users.keys():
+            if message.chat.id in users[sub]:
+                users[sub].remove(message.chat.id)
 
         with open('users.json', 'w') as js:
             json.dump(users, js)
 
-        bot.send_message(message.chat.id, 'Ви успішно вимкнули сповіщення.')
+        bot.send_message(message.chat.id, 'Ви успішно вимкнули сповіщення. \nЩоб ввімкнути сповіщення'
+                                          ' виберіть підгрупу командою /subgroup1 або /subgroup2')
 
 
 def notify():
