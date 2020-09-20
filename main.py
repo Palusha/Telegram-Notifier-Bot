@@ -7,8 +7,11 @@ import time
 
 bot = telebot.TeleBot(config.token)
 
-with open('schedule.json') as js:
-    data = json.load(js)
+with open('first_subgroup_schedule.json') as js:
+    first_subgroup_data = json.load(js)
+
+with open('second_subgroup_schedule.json') as js:
+    second_subgroup_data = json.load(js)
 
 with open('users.json') as js:
     users = json.load(js)
@@ -20,13 +23,12 @@ week = ('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sun
 def send_welcome(message):
     bot.send_message(message.chat.id, f"Вітаю {message.from_user.first_name}!\n"
                                       f"Я <b>{bot.get_me().first_name}</b>,"
-                                      f" бот який сповіщує студента про початок пари.", parse_mode='html')
+                                      f" бот який сповіщує студента про початок пари. "
+                                      f"\nНапиши /help для перегляду доступних команд.", parse_mode='html')
 
 
 @bot.message_handler(commands=['subgroup1', 'subgroup2'])
 def sub_group(message):
-    print(message.text)
-
     if message.chat.id in users['subgroup1']:
         users['subgroup1'].remove(message.chat.id)
 
@@ -36,6 +38,12 @@ def sub_group(message):
     users[message.text[1:]].append(message.chat.id)
     with open('users.json', 'w') as js:
         json.dump(users, js)
+
+    if message.text[1:] == 'subgroup1':
+        bot.send_message(message.chat.id, 'Ви були додані у першу підгрупу.')
+
+    if message.text[1:] == 'subgroup2':
+        bot.send_message(message.chat.id, 'Ви були додані у другу підгрупу.')
 
 
 @bot.message_handler(commands=['help'])
@@ -49,56 +57,60 @@ def show_commands(message):
 
 @bot.message_handler(commands=['leave'])
 def leave(message):
-    if message.chat.id in users['subgroup1']:
-        users['subgroup1'].remove(message.chat.id)
+    if message.chat.id not in users['subgroup1'] and message.chat.id not in users['subgroup2']:
+        bot.send_message(message.chat.id, 'Вас немає у списку підгруп!')
+    else:
+        if message.chat.id in users['subgroup1']:
+            users['subgroup1'].remove(message.chat.id)
 
-    if message.chat.id in users['subgroup2']:
-        users['subgroup2'].remove(message.chat.id)
+        if message.chat.id in users['subgroup2']:
+            users['subgroup2'].remove(message.chat.id)
 
-    with open('users.json', 'w') as js:
-        json.dump(users, js)
+        with open('users.json', 'w') as js:
+            json.dump(users, js)
 
-
-@bot.message_handler(content_types=['text'])
-def show(message):
-    print(message.text)
+        bot.send_message(message.chat.id, 'Ви успішно вимкнули сповіщення.')
 
 
 def notify():
-    count = 0
+    first_subgroup_schedule = first_subgroup_data[week[datetime.now().weekday()]]
+    second_subgroup_schedule = second_subgroup_data[week[datetime.now().weekday()]]
+
     while True:
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
         forward_time = current_time[0:3] + str(int(current_time[3:5]) + 10) + current_time[5:]
 
         if current_time == "00:00:00":
-            count = 0
+            first_subgroup_schedule = first_subgroup_data[week[datetime.now().weekday()]]
+            second_subgroup_schedule = second_subgroup_data[week[datetime.now().weekday()]]
 
-        if count == 0:
-            day_schedule = data[week[now.weekday()]]
-            count = 1
-
-        if forward_time in day_schedule:
+        if forward_time in first_subgroup_schedule:
             for i in users["subgroup1"]:
-                bot.send_message(i, f'Скоро розпочнеться пара: "{day_schedule[forward_time]["subgroup1"]["name"]}"'
-                                    f'\nПосилання: google.com')
+                bot.send_message(i, f'Пара "{first_subgroup_schedule[forward_time]["name"]}" '
+                                    f'почнеться через 10 хвилин \nПосилання: '
+                                    f'{first_subgroup_schedule[forward_time]["link"]}')
 
+        if forward_time in second_subgroup_schedule:
             for i in users["subgroup2"]:
-                bot.send_message(i, f'Скоро розпочнеться пара: "{day_schedule[forward_time]["subgroup2"]["name"]}"'
-                                    f'\nПосилання: google.com')
+                bot.send_message(i, f'Пара "{second_subgroup_schedule[forward_time]["name"]}" '
+                                    f'почнеться через 10 хвилин \nПосилання: '
+                                    f'{second_subgroup_schedule[forward_time]["link"]}')
 
-        if current_time in day_schedule:
+        if current_time in first_subgroup_schedule:
             for i in users["subgroup1"]:
-                bot.send_message(i, f'Пара: "{day_schedule[current_time]["subgroup1"]["name"]}" почалась '
-                                    f'\nПосилання: google.com')
+                bot.send_message(i, f'Пара: "{first_subgroup_schedule[current_time]["name"]}" почалась. '
+                                    f'\nПосилання: {first_subgroup_schedule[current_time]["link"]}')
 
+        if current_time in second_subgroup_schedule:
             for i in users["subgroup2"]:
-                bot.send_message(i, f'Пара: "{day_schedule[current_time]["subgroup2"]["name"]}" почалась '
-                                    f'\nПосилання: google.com')
+                bot.send_message(i, f'Пара: "{second_subgroup_schedule[current_time]["name"]}" почалась.'
+                                    f'\nПосилання: {second_subgroup_schedule[current_time]["link"]}')
+
         time.sleep(1)
 
 
-thr = threading.Thread(target=notify, args=())
+thr = threading.Thread(target=notify)
 thr.start()
 
 bot.polling(none_stop=True)
