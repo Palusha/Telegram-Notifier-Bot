@@ -5,18 +5,17 @@ import config
 import threading
 import time
 
+week = ('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday')
 bot = telebot.TeleBot(config.token)
 
-with open('first_subgroup_schedule.json') as js:
+with open('first_subgroup_schedule.json', encoding="utf-8") as js:
     first_subgroup_data = json.load(js)
 
-with open('second_subgroup_schedule.json') as js:
+with open('second_subgroup_schedule.json', encoding="utf-8") as js:
     second_subgroup_data = json.load(js)
 
 with open('users.json') as js:
     users = json.load(js)
-
-week = ('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday')
 
 
 @bot.message_handler(commands=['start'])
@@ -78,7 +77,14 @@ def notify():
     while True:
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
-        forward_time = current_time[0:3] + str(int(current_time[3:5]) + 10) + current_time[5:]
+        temp = current_time.split(':')
+        forward_time_min = int(temp[0]) * 3600 + int(temp[1]) * 60 + int(temp[2]) + 600
+        forward_time = ('0' + str(forward_time_min // 3600))[-2:] + ':' + (
+                '0' + str(forward_time_min % 3600 // 60))[-2:] + ':' + ('0' + str(forward_time_min % 3600 % 60))[-2:]
+
+        print(current_time)
+        print(forward_time)
+        print()
 
         if current_time == "00:00:00":
             first_subgroup_schedule = first_subgroup_data[week[datetime.now().weekday()]]
