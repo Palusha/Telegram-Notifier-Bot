@@ -34,65 +34,51 @@
     {
         "11:30:00":
         {
-          "name":"Безпека програм та даних, ч1 (Лекція)",
-          "link":"https://meet.google.com/pzc-iuev-uzm"
+          "name": "Безпека програм та даних, ч1 (Лекція)",
+          "link": "https://meet.google.com/kvv-gzco-dyj"
         },
         "13:00:00":
         {
-          "name":"Програмування мобільних додатків (Лекція)",
-          "link":"https://meet.google.com/sjq-mvyt-wwt"
+          "name": "Програмування мобільних додатків (Лекція)",
+          "link": "https://meet.google.com/sjq-mvyt-wwt"
         },
         "14:40:00":
         {
-          "name":"Англійська мова професійного спрямування",
-          "link":"meet.google.com/gdc-gkbq-sdf"
+          "name": "Англійська мова професійного спрямування",
+          "link": "meet.google.com/gdc-gkbq-sdf"
         }
     },
     "thursday":
     {
         "11:30:00":
         {
-          "name":"Розробка Lightweight додатків (Лекція)",
-          "link":"ssilka"
+          "name": "Розробка Lightweight додатків (Лекція)",
+          "link": "Ischi sam"
         },
         "13:00:00":
         {
-          "name":"Розробка Lightweight додатків (Практика)",
-          "link":"ssilka"
+          "name": "Розробка Lightweight додатків (Практика)",
+          "link": "Ischi sam"
         },
         "14:40:00":
         {
-          "name":"Розробка високонавантажених веб-систем мовою Python (Лекція)",
-          "link":"https://meet.google.com/hus-hcvf-qde"
+          "name": "Розробка високонавантажених веб-систем мовою Python (Лекція)",
+          "link": "https://meet.google.com/hus-hcvf-qde"
         }
     },
     "friday":
     {
         "11:30:00":
         {
-            "name":"Якість програмного забезпечення та тестування (Лекція)",
-            "link":"ssilka"
+          "name": "Якість програмного забезпечення та тестування (Лекція)",
+          "link": "https://meet.google.com/yac-crmr-gib"
         },
         "13:00:00":
         {
-            "name":"Якість програмного забезпечення та тестування (Практика)",
-            "link":"ssilka"
+          "name": "Якість програмного забезпечення та тестування (Практика)",
+          "link": "https://meet.google.com/yac-crmr-gib"
         }
     },
-    "saturday":
-    {
-        "11:30:00":
-        {
-          "name":"test",
-          "link":"ssilka"
-        }
-    },
-    "sunday":
-    {
-        "20:43:00":
-        {
-          "name":"test",
-          "link":"ssilka"
-        }
-    }
+    "saturday": {},
+    "sunday": {}
 }
