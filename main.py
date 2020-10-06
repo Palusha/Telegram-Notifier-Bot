@@ -38,6 +38,7 @@ def sub_group(message):
                 users[sub].remove(message.chat.id)
 
         users[message.text[1:]].append(message.chat.id)
+
         with open('users.json', 'w') as js:
             json.dump(users, js)
 
