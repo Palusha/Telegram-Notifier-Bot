@@ -1,5 +1,8 @@
 start - Початок роботи
-subgroup1 - Перша підгрупа
-subgroup2 - Друга підгрупа
+first_subgroup - Перша підгрупа
+second_subgroup - Друга підгрупа
+first_subgroup_schedule - Розклад першої підгрупи
+second_subgroup_schedule - Розклад другої підгрупи
+day_schedule - Розклад на вибраний день
 help - Показати доступні команди
 leave - Вимкнути сповіщення

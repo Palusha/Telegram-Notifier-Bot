@@ -2,5 +2,5 @@ users.json
 config.py
 test.py
 Аналіз вимог.docx
-/.idea
-/__pycache__
+.idea/
+__pycache__/
