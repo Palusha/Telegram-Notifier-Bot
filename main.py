@@ -1,15 +1,19 @@
 from datetime import *
 import telebot
 import json
-import config
 import threading
 import time
 import logging
 import requests
+from dotenv import load_dotenv
+import os
+import pymongo
+from pymongo import MongoClient
 
+load_dotenv()
 ukr_week = ("понеділок", "вівторок", "середа", "четвер", "п'ятниця")
-week = ('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday')
-bot = telebot.TeleBot(config.token)
+week = ('monday', 'tuesday', 'wednesday', 'thursday', 'friday')
+bot = telebot.TeleBot(os.getenv("TOKEN"))
 
 sub_group_keyboard = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
 sub_group_keyboard.row('Перша підгрупа', 'Друга підгрупа')
@@ -17,14 +21,11 @@ days_keyboard = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time
 days_keyboard.row("Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця")
 cancel_markup = telebot.types.ReplyKeyboardRemove()
 
-with open('C:\\Users\\Palushka\\PycharmProjects\\Bot\\first_subgroup_schedule.json', encoding="utf-8") as js:
-    first_subgroup_data = json.load(js)
-
-with open('C:\\Users\\Palushka\\PycharmProjects\\Bot\\second_subgroup_schedule.json', encoding="utf-8") as js:
-    second_subgroup_data = json.load(js)
-
-with open('C:\\Users\\Palushka\\PycharmProjects\\Bot\\users.json') as js:
-    users = json.load(js)
+cluster = MongoClient(os.getenv("MONGODB_URL"))
+db = cluster[os.getenv("MONGODB_NAME")]
+first_subgroup_data = db[os.getenv("MONGODB_COLLECTIONF")]
+second_subgroup_data = db[os.getenv("MONGODB_COLLECTIONS")]
+users_collection = db[os.getenv("MONGODB_COLLECTIONU")]
 
 
 @bot.message_handler(commands=['start'])
@@ -38,17 +39,15 @@ def send_welcome(message):
 
 @bot.message_handler(commands=['first_subgroup', 'second_subgroup'])
 def sub_group(message):
-    if message.chat.id in users[message.text[1:]]:
+    user = users_collection.find_one({"_id": message.chat.id}, {"_id": False})
+
+    if user and user.get("subgroup") == message.text[1:]:
         bot.send_message(message.chat.id, 'Ви вже пристуні у даній підгрупі!', reply_markup=cancel_markup)
     else:
-        for sub in users.keys():
-            if message.chat.id in users[sub]:
-                users[sub].remove(message.chat.id)
-
-        users[message.text[1:]].append(message.chat.id)
-
-        with open('users.json', 'w') as js:
-            json.dump(users, js)
+        if not user:
+            users_collection.insert_one({"_id": message.chat.id, "subgroup": message.text[1:]})
+        else:
+            users_collection.update_one({"_id": message.chat.id}, {"$set": {"subgroup": message.text[1:]}})
 
         if message.text[1:] == 'first_subgroup':
             bot.send_message(message.chat.id, 'Ви були додані у першу підгрупу.', reply_markup=cancel_markup)
@@ -58,19 +57,22 @@ def sub_group(message):
 
 @bot.message_handler(commands=['first_subgroup_schedule', 'second_subgroup_schedule'])
 def show_sub_group_schedule(message):
-    sub_group_data = [first_subgroup_data, second_subgroup_data]
-    index = 0 if message.text[1:6] == 'first' else 1
-    chosen_sub_group = sub_group_data[index]
-    show_schedule = ''
-    day_count = 0
+    show_schedule = ""
+    schedule_data = []
+    if message.text[1:6] == "first":
+        for i in first_subgroup_data.find({}, {"_id": 0, "link": 0}):
+            schedule_data.append(i)
+    else:
+        for i in second_subgroup_data.find({}, {"_id": 0, "link": 0}):
+            schedule_data.append(i)
 
-    for day in chosen_sub_group:
-        if day in week[-2:]:
-            continue
-        show_schedule += f'─────────\n<b>{ukr_week[day_count].upper()}:</b>\n\n'
-        for lesson_time in chosen_sub_group[day]:
-            show_schedule += f'➜ {lesson_time[:-3]}: \n{chosen_sub_group[day][lesson_time]["name"]}\n\n'
-        day_count += 1
+    for day in week:
+        show_schedule += f'─────────\n<b>{ukr_week[week.index(day)].upper()}:</b>\n\n'
+        for lesson in schedule_data:
+            if day in lesson.get("day"):
+                show_schedule += f'➜ {lesson.get("time")[:-3]}:\n' \
+                                 f'{lesson.get("name")}\n' \
+                                 f'Тиждень: {lesson.get("week_count")}\n\n'
 
     bot.send_message(message.chat.id, show_schedule, parse_mode='html', reply_markup=cancel_markup)
 
@@ -94,18 +96,25 @@ def choose_subgroup(message):
 
 
 def day_schedule(message, chosen_subgroup):
-    sub_group_list = 'перша підгрупа', 'друга підгрупа'
     if message.text in commands_dict:
         return commands_dict[message.text](message)
     elif message.text.lower() not in ukr_week:
         bot.send_message(message.chat.id, 'Обрано некоректний день!')
         bot.register_next_step_handler(message, day_schedule, chosen_subgroup)
     else:
-        sub_group_check = [first_subgroup_data, second_subgroup_data][sub_group_list.index(chosen_subgroup)]
-        day = week[ukr_week.index(message.text.lower())]
+        if chosen_subgroup == "перша підгрупа":
+            day = week[ukr_week.index(message.text.lower())]
+            subgroup_day_data = first_subgroup_data.find({"day": day}, {"_id": 0, "link": 0})
+        else:
+            day = week[ukr_week.index(message.text.lower())]
+            subgroup_day_data = second_subgroup_data.find({"day": day}, {"_id": 0, "link": 0})
+
         schedule_of_the_day = f'<b>{message.text[0:1].title()+message.text[1:].lower()}</b>:\n\n'
-        for lesson_time in sub_group_check[day]:
-            schedule_of_the_day += f'➜ {lesson_time}:\n{sub_group_check[day][lesson_time]["name"]}\n\n'
+        for lesson in subgroup_day_data:
+            schedule_of_the_day += f'➜ {lesson.get("time")[:-3]}:\n' \
+                                   f'{lesson.get("name")}\n' \
+                                   f'Тиждень: {lesson.get("week_count")}\n\n'
+
         bot.send_message(message.chat.id, schedule_of_the_day, reply_markup=cancel_markup, parse_mode='html')
 
 
@@ -123,19 +132,16 @@ def show_commands(message):
 
 @bot.message_handler(commands=['leave'])
 def leave(message):
-    if message.chat.id not in users['first_subgroup'] and message.chat.id not in users['second_subgroup']:
+    user = users_collection.find_one({"_id": message.chat.id})
+
+    if not user:
         bot.send_message(message.chat.id, 'Вас немає у списку підгруп!', reply_markup=cancel_markup)
     else:
-        for sub in users.keys():
-            if message.chat.id in users[sub]:
-                users[sub].remove(message.chat.id)
-
-        with open('users.json', 'w') as js:
-            json.dump(users, js)
+        users_collection.delete_one({"_id": message.chat.id})
 
         bot.send_message(message.chat.id, 'Ви успішно вимкнули сповіщення. \nЩоб ввімкнути сповіщення'
                                           ' виберіть підгрупу командою /first_subgroup або /second_subgroup',
-                                          reply_markup=cancel_markup)
+                         reply_markup=cancel_markup)
 
 
 def notify():
@@ -144,11 +150,8 @@ def notify():
 
     while True:
         now = datetime.now()
+        forward_time = (now + timedelta(minutes=10)).strftime("%H:%M:%S")
         current_time = now.strftime("%H:%M:%S")
-        temp = current_time.split(':')
-        forward_time_sec = int(temp[0]) * 3600 + int(temp[1]) * 60 + int(temp[2]) + 600
-        forward_time = ('%02d:%02d:%02d' % (
-            forward_time_sec // 3600, forward_time_sec % 3600 // 60, forward_time_sec % 3600 % 60))
 
         if current_time == "00:00:00":
             first_subgroup_schedule = first_subgroup_data[week[datetime.now().weekday()]]

@@ -1,6 +1,4 @@
-users.json
-config.py
-test.py
-Аналіз вимог.docx
+.env
+local.py
 .idea/
 __pycache__/
