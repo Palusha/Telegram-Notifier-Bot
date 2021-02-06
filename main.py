@@ -12,7 +12,7 @@ from pymongo import MongoClient
 
 load_dotenv()
 ukr_week = ("понеділок", "вівторок", "середа", "четвер", "п'ятниця")
-week = ("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday")
+week = ("monday", "tuesday", "wednesday", "thursday", "friday")
 starting_date = date(2021, 2, 1)
 bot = telebot.TeleBot(os.getenv("TOKEN"))
 
@@ -163,6 +163,7 @@ def day_subgroup_schedule():
 
 def notify():
     first_subgroup_schedule, second_subgroup_schedule = day_subgroup_schedule()
+
     while True:
         now = datetime.now()
         forward_time = (now + timedelta(minutes=10)).strftime("%H:%M:%S")
@@ -174,28 +175,28 @@ def notify():
         if forward_time in first_subgroup_schedule:
             for user in users_collection.find({"subgroup": "first_subgroup"}):
                 try:
-                    bot.send_message(user.get("_id"), f'Пара "{first_subgroup_schedule.get(forward_time).get("name")}" '
-                                                      f'почнеться через 10 хвилин \nПосилання: '
-                                                      f'{first_subgroup_schedule.get(forward_time).get("link")}')
+                    bot.send_message(user.get("_id"),
+                                     f'Пара "{first_subgroup_schedule.get(forward_time).get("name")}" '
+                                     f'почнеться через 10 хвилин \n'
+                                     f'Посилання: {first_subgroup_schedule.get(forward_time).get("link")}')
                 except telebot.apihelper.ApiTelegramException:
                     users_collection.delete_one({"_id": user.get("_id")})
 
         if forward_time in second_subgroup_schedule:
             for user in users_collection.find({"subgroup": "second_subgroup"}):
                 try:
-                    bot.send_message(user.get("_id"), f'Пара "{second_subgroup_schedule.get(forward_time).get("name")}"'
-                                                      f'почнеться через 10 хвилин \nПосилання: '
-                                                      f'{second_subgroup_schedule.get(forward_time).get("link")}')
+                    bot.send_message(user.get("_id"),
+                                     f'Пара "{second_subgroup_schedule.get(forward_time).get("name")}"'
+                                     f'почнеться через 10 хвилин \n'
+                                     f'Посилання: {second_subgroup_schedule.get(forward_time).get("link")}')
                 except telebot.apihelper.ApiTelegramException:
                     users_collection.delete_one({"_id": user.get("_id")})
 
         if current_time in first_subgroup_schedule:
             for user in users_collection.find({"subgroup": "first_subgroup"}):
-                print(user)
                 try:
                     bot.send_message(user.get("_id"),
-                                     f'Пара: "{first_subgroup_schedule.get(current_time).get("name")}" почнеться '
-                                     f'через 10 хвилин \n '
+                                     f'Пара: "{first_subgroup_schedule.get(current_time).get("name")}" почалась\n'
                                      f'Посилання: {first_subgroup_schedule.get(current_time).get("link")}')
                 except telebot.apihelper.ApiTelegramException:
                     users_collection.delete_one({"_id": user.get("_id")})
@@ -203,9 +204,9 @@ def notify():
         if current_time in second_subgroup_schedule:
             for user in users_collection.find({"subgroup": "second_subgroup"}):
                 try:
-                    bot.send_message(user.get("_id"), f'Пара "{second_subgroup_schedule.get(current_time).get("name")}"'
-                                                      f'почнеться через 10 хвилин \nПосилання: '
-                                                      f'{second_subgroup_schedule.get(current_time).get("link")}')
+                    bot.send_message(user.get("_id"),
+                                     f'Пара: "{second_subgroup_schedule.get(current_time).get("name")}" почалась\n'
+                                     f'Посилання: {second_subgroup_schedule.get(current_time).get("link")}')
                 except telebot.apihelper.ApiTelegramException:
                     users_collection.delete_one({"_id": user.get("_id")})
 
